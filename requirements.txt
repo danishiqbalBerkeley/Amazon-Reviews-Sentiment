@@ -1,0 +1,5 @@
+nltk
+pyspark
+argparse
+pprint
+twython

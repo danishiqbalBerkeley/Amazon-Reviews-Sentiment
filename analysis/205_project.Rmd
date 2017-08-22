@@ -1,0 +1,49 @@
+---
+title: "205_project"
+author: "Thong Bui"
+date: "11/18/2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Figuring out the correlations from Amazon's overall and NLTK values
+
+This section is using a sample file generated from parse_json.py and find out which variable has the best correlation. Then, 
+we will try to combine the variables to figure out the outliers, anomalies to hopefully find out "weird" items
+
+```{r}
+library(car)
+setwd("~/Desktop/MIDS/205_storage_retrieval/github/w205-project/code/analysis")
+sa = read.csv("sample.csv")
+summary(sa)
+nrow(sa)
+scatterplotMatrix(~ overall + neg + neu + pos + compound, data=sa)
+
+(m1=lm(compound ~ overall, data=sa))
+plot(sa$overall, sa$compound)
+abline(m1)
+
+cor(sa$overall, sa$compound)
+cor(sa$overall, sa$pos)
+cor(sa$overall, sa$neg)
+cor(sa$overall, sa$neu)
+```
+
+Because compound values is in the range of (-1, 1) and overall is in the range [0,5], I thought using this function: 
+
+  overall - 5 * compound
+  
+will help us figure out the outliers
+
+
+```{r}
+plot(sa$overall, -(5*sa$compound) +sa$overall, xlab = "overall", ylab="overall - 5*compound")
+```
+
+As you can see, the outliers lay when overall - 5 * compound < -3 or > 8
+
+
+
